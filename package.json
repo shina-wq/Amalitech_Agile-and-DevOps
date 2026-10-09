@@ -1,0 +1,13 @@
+{
+  "name": "taskflow-api",
+  "version": "0.1.0",
+  "description": "A lightweight REST API for creating, organising and tracking tasks.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
