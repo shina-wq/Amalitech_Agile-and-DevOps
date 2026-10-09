@@ -4,10 +4,15 @@
   "description": "A lightweight REST API for creating, organising and tracking tasks.",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
     "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.3.1"
   }
 }
