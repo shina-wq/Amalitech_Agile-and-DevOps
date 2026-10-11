@@ -121,3 +121,77 @@ A backlog item is **Done** when:
 | Implement `GET /tasks` with tests | US2 |
 | Implement `PATCH /tasks/:id/status` with validation and tests | US3 |
 | Write the Sprint 1 review and retrospective | Ceremony |
+
+---
+
+## Sprint 1 – Review
+
+**Sprint goal:** A user can create, view and progress tasks, with tests running automatically in CI. **✅ Met**
+
+### Delivered
+
+| Story | Points | Status | Evidence |
+|-------|--------|--------|----------|
+| US1 – Create a task | 3 | ✅ Done | `POST /tasks` + 7 tests |
+| US2 – List all tasks | 2 | ✅ Done | `GET /tasks` + 4 tests |
+| US3 – Update a task's status | 3 | ✅ Done | `PATCH /tasks/:id/status` + 8 tests |
+
+**Velocity:** 8 of 8 planned points completed.
+
+### DevOps setup
+
+- **Version control:** one commit per task, pushed to `main`.
+- **CI:** GitHub Actions ([`ci.yml`](.github/workflows/ci.yml)) runs `npm ci` and `npm test` on every push and pull request to `main`, on Node 22.x and 24.x.
+- **Testing:** 22 tests (unit tests for the store, integration tests for the endpoints via Supertest), all passing.
+
+### Demo
+
+```bash
+# Create a task
+curl -X POST http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Plan sprint", "description": "Pick 2-3 stories"}'
+# 201 → {"id":"…","title":"Plan sprint","description":"Pick 2-3 stories","status":"todo","createdAt":"…"}
+
+# List tasks
+curl http://localhost:3000/tasks
+# 200 → [{ … }]
+
+# Update status
+curl -X PATCH http://localhost:3000/tasks/<id>/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "in-progress"}'
+# 200 → {"id":"…","status":"in-progress", …}
+```
+
+### Screenshots
+
+- CI run: ![Sprint 1 CI run](docs/screenshots/sprint-1-ci.png)
+- Test results: ![Sprint 1 test results](docs/screenshots/sprint-1-tests.png)
+
+---
+
+## Sprint 1 – Retrospective
+
+### What went well
+
+- All planned stories were delivered and meet their acceptance criteria.
+- Tests were written alongside each story, so every feature was verified before moving on.
+- Setting up CI early meant every later commit was tested automatically.
+- Work was committed in small steps, one per task.
+
+### What didn't go well
+
+- **Tooling issue:** Jest 30 failed on Windows because its native resolver needs the Visual C++ Redistributable. Downgrading to Jest 29 fixed it but cost time, and `npm audit` now reports a known issue in Jest 29's dev-only dependencies.
+- **Inconsistent commit messages:** only some commits used the `type(story): message` format, which makes the history harder to trace back to stories.
+- **Acceptance criteria drift:** extra rules were added during US1 (trimming titles, rejecting a description that isn't a string) without updating the acceptance criteria first.
+- **Evidence collected late:** screenshots and test output were gathered at the end of the sprint instead of as each story was finished.
+
+### Improvements for Sprint 2
+
+| # | Improvement | How it will be applied |
+|---|-------------|------------------------|
+| 1 | Consistent, traceable commits | Use [Conventional Commits](https://www.conventionalcommits.org/) with the story ID, e.g. `feat(US4): …` |
+| 2 | Refine before building | Update a story's acceptance criteria in the README *before* implementing any new rule |
+| 3 | Capture evidence as we go | Save test output and CI screenshots to `docs/screenshots/` when each story is done |
+| 4 | Check tooling up front | Check a new dependency's platform requirements before adopting it |
