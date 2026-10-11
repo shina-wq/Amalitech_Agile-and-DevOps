@@ -1,0 +1,78 @@
+TaskFlow API – demo run (2026-10-11T19:08:07Z)
+
+## US1 – Create a task
+### Create a task
+$ curl -X POST http://localhost:3000/tasks -H 'Content-Type: application/json' -d '{"title": "Plan sprint", "description": "Pick 2-3 stories"}'
+HTTP/1.1 201 Created
+{"id":"e24da7c6-1145-4a13-a0de-e73401f6534a","title":"Plan sprint","description":"Pick 2-3 stories","status":"todo","createdAt":"2026-10-11T19:08:07.217Z"}
+
+### Create a second task
+$ curl -X POST http://localhost:3000/tasks -H 'Content-Type: application/json' -d '{"title": "Write tests"}'
+HTTP/1.1 201 Created
+{"id":"017d8a97-0ca2-4322-b865-ba3fd474a70d","title":"Write tests","description":"","status":"todo","createdAt":"2026-10-11T19:08:07.353Z"}
+
+### Missing title
+$ curl -X POST http://localhost:3000/tasks -H 'Content-Type: application/json' -d '{}'
+HTTP/1.1 400 Bad Request
+{"error":"Title is required"}
+
+## US2 – List all tasks
+### List tasks
+$ curl http://localhost:3000/tasks
+HTTP/1.1 200 OK
+[{"id":"e24da7c6-1145-4a13-a0de-e73401f6534a","title":"Plan sprint","description":"Pick 2-3 stories","status":"todo","createdAt":"2026-10-11T19:08:07.217Z"},{"id":"017d8a97-0ca2-4322-b865-ba3fd474a70d","title":"Write tests","description":"","status":"todo","createdAt":"2026-10-11T19:08:07.353Z"}]
+
+## US3 – Update a task's status
+### Set status to done
+$ curl -X PATCH http://localhost:3000/tasks/017d8a97-0ca2-4322-b865-ba3fd474a70d/status -H 'Content-Type: application/json' -d '{"status": "done"}'
+HTTP/1.1 200 OK
+{"id":"017d8a97-0ca2-4322-b865-ba3fd474a70d","title":"Write tests","description":"","status":"done","createdAt":"2026-10-11T19:08:07.353Z"}
+
+### Invalid status
+$ curl -X PATCH http://localhost:3000/tasks/017d8a97-0ca2-4322-b865-ba3fd474a70d/status -H 'Content-Type: application/json' -d '{"status": "archived"}'
+HTTP/1.1 400 Bad Request
+{"error":"Status must be one of: todo, in-progress, done"}
+
+### Unknown task
+$ curl -X PATCH http://localhost:3000/tasks/missing-id/status -H 'Content-Type: application/json' -d '{"status": "done"}'
+HTTP/1.1 404 Not Found
+{"error":"Task not found"}
+
+## US5 – Filter tasks by status
+### Filter by done
+$ curl 'http://localhost:3000/tasks?status=done'
+HTTP/1.1 200 OK
+[{"id":"017d8a97-0ca2-4322-b865-ba3fd474a70d","title":"Write tests","description":"","status":"done","createdAt":"2026-10-11T19:08:07.353Z"}]
+
+### Invalid filter
+$ curl 'http://localhost:3000/tasks?status=bad'
+HTTP/1.1 400 Bad Request
+{"error":"Status must be one of: todo, in-progress, done"}
+
+## US4 – Delete a task
+### Delete task
+$ curl -X DELETE http://localhost:3000/tasks/017d8a97-0ca2-4322-b865-ba3fd474a70d
+HTTP/1.1 204 No Content
+
+### Delete again
+$ curl -X DELETE http://localhost:3000/tasks/017d8a97-0ca2-4322-b865-ba3fd474a70d
+HTTP/1.1 404 Not Found
+{"error":"Task not found"}
+
+## US6 – Health endpoint
+### Health check
+$ curl http://localhost:3000/health
+HTTP/1.1 200 OK
+{"status":"ok","uptime":1}
+
+## US7 – Error handling
+### Malformed JSON
+$ curl -X POST http://localhost:3000/tasks -H 'Content-Type: application/json' -d '{"title": '
+HTTP/1.1 400 Bad Request
+{"error":"Malformed JSON in request body"}
+
+### Unknown route
+$ curl http://localhost:3000/nope
+HTTP/1.1 404 Not Found
+{"error":"Route not found"}
+

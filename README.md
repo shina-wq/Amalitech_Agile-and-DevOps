@@ -292,10 +292,26 @@ TaskFlow API listening on port 3000
 
 | Deliverable | Where |
 |-------------|-------|
-| Backlog and sprint plans | [Sprint 0 – Planning](#sprint-0--planning), plus the Plan section of each sprint |
-| Codebase and commit history | [`src/`](src), [`tests/`](tests), and the repository's commit history |
-| CI/CD | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and the [Actions runs](https://github.com/shina-wq/Amalitech_Agile-and-DevOps/actions) |
-| Test results | `npm test` locally, or the "Run tests" step of any CI run |
-| Sprint reviews | [Sprint 1 Review](#review) and [Sprint 2 Review](#review-1) |
-| Retrospectives | [Sprint 1 Retro](#retrospective) and [Sprint 2 Retro](#retrospective-1) |
-| Screenshots | [`docs/screenshots/`](docs/screenshots) |
+| 1. Backlog and sprint plans | [Sprint 0 – Planning](#sprint-0--planning), plus the Plan section of each sprint |
+| 2. Codebase and commit history | [`src/`](src), [`tests/`](tests), and [commit history](#commit-history) below |
+| 3. CI/CD | [`ci.yml`](.github/workflows/ci.yml), [Actions runs](https://github.com/shina-wq/Amalitech_Agile-and-DevOps/actions), and [CI screenshots](#ci-pipeline) below |
+| 4. Test results | [`test-results.txt`](docs/evidence/test-results.txt) — 36 tests, 6 suites, all passing |
+| 5. Sprint reviews | [Sprint 1 Review](#review), [Sprint 2 Review](#review-1), [`api-demo.txt`](docs/evidence/api-demo.txt) |
+| 6. Retrospectives | [Sprint 1 Retro](#retrospective), [Sprint 2 Retro](#retrospective-1) |
+| Monitoring and logging | [`server-logs.txt`](docs/evidence/server-logs.txt) — one log line per request in the API demo |
+
+### CI pipeline
+
+Every push to `main` triggered a green CI run:
+
+![CI runs](docs/screenshots/ci-runs.png)
+
+Each run tests on Node 22.x and 24.x in parallel:
+
+![CI run detail](docs/screenshots/ci-run-detail.png)
+
+### Commit history
+
+Work was delivered in small, incremental commits across Sprint 0, 1 and 2:
+
+![Commit history](docs/screenshots/commit-history.png)

@@ -1,0 +1,70 @@
+
+> taskflow-api@0.1.0 test
+> jest --verbose
+
+PASS tests/errorHandlers.test.js
+  errorHandler
+    √ returns 500 with a generic message and logs the error details (44 ms)
+
+PASS tests/tasks.test.js
+  GET /tasks
+    √ returns 200 with an empty array when no tasks exist (7 ms)
+    √ returns 200 with all tasks (23 ms)
+    with ?status= filter
+      √ returns 200 with only tasks of that status (13 ms)
+      √ returns 200 with an empty array when no tasks match (13 ms)
+      √ returns 400 when status is "archived" (12 ms)
+      √ returns 400 when status is "" (11 ms)
+  POST /tasks
+    √ creates a task and returns 201 (3 ms)
+    √ saves an optional description (2 ms)
+    √ returns 400 when title is missing (2 ms)
+    √ returns 400 when title is empty (4 ms)
+    √ returns 400 when title is whitespace only (3 ms)
+    √ returns 400 when title is not a string (3 ms)
+    √ returns 400 when description is not a string (3 ms)
+  PATCH /tasks/:id/status
+    √ updates status to todo and returns 200 (5 ms)
+    √ updates status to in-progress and returns 200 (5 ms)
+    √ updates status to done and returns 200 (5 ms)
+    √ returns 400 when status is invalid (5 ms)
+    √ returns 400 when status is missing (5 ms)
+    √ returns 404 when the task does not exist (5 ms)
+  DELETE /tasks/:id
+    √ deletes an existing task and returns 204 (9 ms)
+    √ returns 404 when the task does not exist (2 ms)
+
+PASS tests/requestLogger.test.js
+  requestLogger
+    √ logs method, path, status code and response time (5 ms)
+    √ logs the status code of failed requests (5 ms)
+
+PASS tests/app.test.js
+  App
+    √ returns 404 with a JSON error for an unknown route (10 ms)
+    √ returns 400 with a JSON error for malformed JSON (9 ms)
+
+PASS tests/health.test.js
+  GET /health
+    √ returns 200 with status ok and uptime in seconds (5 ms)
+
+PASS tests/taskStore.test.js
+  taskStore.create
+    √ creates a task with defaults (1 ms)
+    √ generates a unique id for each task
+  taskStore.findAll
+    √ returns all tasks in creation order
+    √ returns a copy so callers cannot mutate the store
+    √ filters tasks by status
+  taskStore.updateStatus
+    √ updates the status of an existing task (1 ms)
+    √ returns null when the task does not exist
+  taskStore.remove
+    √ removes an existing task and returns true (8 ms)
+    √ returns false when the task does not exist
+
+Test Suites: 6 passed, 6 total
+Tests:       36 passed, 36 total
+Snapshots:   0 total
+Time:        1.331 s
+Ran all test suites.
