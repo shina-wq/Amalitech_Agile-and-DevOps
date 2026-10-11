@@ -70,6 +70,8 @@ Estimates use story points on a Fibonacci scale (1, 2, 3, 5, 8) relative to the 
 - Given a valid `title`, when I `POST /tasks`, then I receive `201` with the task including `id`, `title`, `status: "todo"` and `createdAt`.
 - Given an optional `description`, it is saved and returned with the task.
 - Given a missing or empty `title`, then I receive `400` with an error message.
+- *(Refined in Sprint 2)* Leading and trailing whitespace is trimmed from `title`; a title that is only whitespace is treated as empty.
+- *(Refined in Sprint 2)* Given a `description` that is not a string, then I receive `400` with an error message.
 
 **US2 – List all tasks**
 - When I `GET /tasks`, then I receive `200` with an array of all tasks.
@@ -90,11 +92,14 @@ Estimates use story points on a Fibonacci scale (1, 2, 3, 5, 8) relative to the 
 
 **US6 – Health endpoint**
 - When I `GET /health`, then I receive `200` with `{ "status": "ok" }` and the service uptime.
+- *(Refined in Sprint 2)* The response body is `{ "status": "ok", "uptime": <seconds> }`.
 
 **US7 – Logging and error handling**
 - Every request is logged with method, path, status code and response time.
 - Unexpected errors return `500` with a generic message and are logged with details.
 - Requests to unknown routes return `404` with an error message.
+- *(Refined in Sprint 2)* A request with malformed JSON returns `400` with an error message instead of an HTML error page.
+- *(Refined in Sprint 2)* Request logs are silenced while tests run, to keep test output readable.
 
 ### Definition of Done
 
@@ -195,3 +200,31 @@ curl -X PATCH http://localhost:3000/tasks/<id>/status \
 | 2 | Refine before building | Update a story's acceptance criteria in the README *before* implementing any new rule |
 | 3 | Capture evidence as we go | Save test output and CI screenshots to `docs/screenshots/` when each story is done |
 | 4 | Check tooling up front | Check a new dependency's platform requirements before adopting it |
+
+---
+
+## Sprint 2 – Planning
+
+**Sprint goal:** A user can delete and filter tasks, and an operator can monitor the service's health and troubleshoot it through logs and consistent error responses.
+
+**Selected stories:** US4, US5, US6, US7 (9 points)
+
+### Applying the Sprint 1 improvements
+
+| # | Improvement | Applied in Sprint 2 by |
+|---|-------------|------------------------|
+| 1 | Consistent, traceable commits | Every commit follows `type(scope): message`, e.g. `feat(US4): …` |
+| 2 | Refine before building | US1, US6 and US7 acceptance criteria refined above (marked *Refined in Sprint 2*) before any code is written |
+| 3 | Capture evidence as we go | Test output saved to `docs/screenshots/` after each story |
+| 4 | Check tooling up front | No new dependencies planned; logging uses built-in Node and Express features |
+
+### Task breakdown
+
+| Task | Story |
+|------|-------|
+| Implement `DELETE /tasks/:id` with tests | US4 |
+| Add the `?status=` filter to `GET /tasks` with validation and tests | US5 |
+| Implement `GET /health` with tests | US6 |
+| Add request-logging middleware | US7 |
+| Add JSON 404, malformed-JSON and 500 error handlers with tests | US7 |
+| Write the Sprint 2 review and retrospective | Ceremony |
