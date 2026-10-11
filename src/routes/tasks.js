@@ -3,8 +3,16 @@ const taskStore = require('../store/taskStore');
 
 const router = Router();
 
+const STATUS_ERROR = `Status must be one of: ${taskStore.STATUSES.join(', ')}`;
+
 router.get('/', (req, res) => {
-  res.json(taskStore.findAll());
+  const { status } = req.query;
+
+  if (status !== undefined && !taskStore.STATUSES.includes(status)) {
+    return res.status(400).json({ error: STATUS_ERROR });
+  }
+
+  res.json(taskStore.findAll({ status }));
 });
 
 router.post('/', (req, res) => {
@@ -25,9 +33,7 @@ router.patch('/:id/status', (req, res) => {
   const { status } = req.body ?? {};
 
   if (!taskStore.STATUSES.includes(status)) {
-    return res
-      .status(400)
-      .json({ error: `Status must be one of: ${taskStore.STATUSES.join(', ')}` });
+    return res.status(400).json({ error: STATUS_ERROR });
   }
 
   const task = taskStore.updateStatus(req.params.id, status);

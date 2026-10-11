@@ -16,8 +16,8 @@ function create({ title, description = '' }) {
   return task;
 }
 
-function findAll() {
-  return [...tasks];
+function findAll({ status } = {}) {
+  return status ? tasks.filter((t) => t.status === status) : [...tasks];
 }
 
 function updateStatus(id, status) {

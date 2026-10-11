@@ -37,6 +37,14 @@ describe('taskStore.findAll', () => {
 
     expect(taskStore.findAll()).toHaveLength(1);
   });
+
+  it('filters tasks by status', () => {
+    const a = taskStore.create({ title: 'A' });
+    taskStore.create({ title: 'B' });
+    taskStore.updateStatus(a.id, 'done');
+
+    expect(taskStore.findAll({ status: 'done' })).toEqual([a]);
+  });
 });
 
 describe('taskStore.updateStatus', () => {

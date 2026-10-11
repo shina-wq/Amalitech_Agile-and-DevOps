@@ -21,6 +21,35 @@ describe('GET /tasks', () => {
     expect(res.status).toBe(200);
     expect(res.body.map((t) => t.title)).toEqual(['First', 'Second']);
   });
+
+  describe('with ?status= filter', () => {
+    beforeEach(async () => {
+      const { body: done } = await request(app).post('/tasks').send({ title: 'Done task' });
+      await request(app).post('/tasks').send({ title: 'Todo task' });
+      await request(app).patch(`/tasks/${done.id}/status`).send({ status: 'done' });
+    });
+
+    it('returns 200 with only tasks of that status', async () => {
+      const res = await request(app).get('/tasks?status=done');
+
+      expect(res.status).toBe(200);
+      expect(res.body.map((t) => t.title)).toEqual(['Done task']);
+    });
+
+    it('returns 200 with an empty array when no tasks match', async () => {
+      const res = await request(app).get('/tasks?status=in-progress');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual([]);
+    });
+
+    it.each(['archived', ''])('returns 400 when status is "%s"', async (status) => {
+      const res = await request(app).get(`/tasks?status=${status}`);
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Status must be one of: todo, in-progress, done');
+    });
+  });
 });
 
 describe('POST /tasks', () => {
