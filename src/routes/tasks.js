@@ -3,6 +3,10 @@ const taskStore = require('../store/taskStore');
 
 const router = Router();
 
+router.get('/', (req, res) => {
+  res.json(taskStore.findAll());
+});
+
 router.post('/', (req, res) => {
   const { title, description } = req.body ?? {};
 

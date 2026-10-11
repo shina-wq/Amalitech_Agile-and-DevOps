@@ -4,6 +4,25 @@ const taskStore = require('../src/store/taskStore');
 
 beforeEach(() => taskStore.reset());
 
+describe('GET /tasks', () => {
+  it('returns 200 with an empty array when no tasks exist', async () => {
+    const res = await request(app).get('/tasks');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+
+  it('returns 200 with all tasks', async () => {
+    await request(app).post('/tasks').send({ title: 'First' });
+    await request(app).post('/tasks').send({ title: 'Second' });
+
+    const res = await request(app).get('/tasks');
+
+    expect(res.status).toBe(200);
+    expect(res.body.map((t) => t.title)).toEqual(['First', 'Second']);
+  });
+});
+
 describe('POST /tasks', () => {
   it('creates a task and returns 201', async () => {
     const res = await request(app).post('/tasks').send({ title: 'Plan sprint' });

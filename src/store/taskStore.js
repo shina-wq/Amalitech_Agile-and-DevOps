@@ -14,8 +14,12 @@ function create({ title, description = '' }) {
   return task;
 }
 
+function findAll() {
+  return [...tasks];
+}
+
 function reset() {
   tasks = [];
 }
 
-module.exports = { create, reset };
+module.exports = { create, findAll, reset };
