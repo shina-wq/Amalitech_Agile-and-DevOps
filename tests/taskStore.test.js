@@ -51,3 +51,17 @@ describe('taskStore.updateStatus', () => {
     expect(taskStore.updateStatus('missing-id', 'done')).toBeNull();
   });
 });
+
+describe('taskStore.remove', () => {
+  it('removes an existing task and returns true', () => {
+    const a = taskStore.create({ title: 'A' });
+    const b = taskStore.create({ title: 'B' });
+
+    expect(taskStore.remove(a.id)).toBe(true);
+    expect(taskStore.findAll()).toEqual([b]);
+  });
+
+  it('returns false when the task does not exist', () => {
+    expect(taskStore.remove('missing-id')).toBe(false);
+  });
+});

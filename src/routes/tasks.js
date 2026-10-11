@@ -38,4 +38,12 @@ router.patch('/:id/status', (req, res) => {
   res.json(task);
 });
 
+router.delete('/:id', (req, res) => {
+  if (!taskStore.remove(req.params.id)) {
+    return res.status(404).json({ error: 'Task not found' });
+  }
+
+  res.status(204).end();
+});
+
 module.exports = router;

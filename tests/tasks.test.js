@@ -94,3 +94,24 @@ describe('PATCH /tasks/:id/status', () => {
     expect(res.body.error).toBe('Task not found');
   });
 });
+
+describe('DELETE /tasks/:id', () => {
+  it('deletes an existing task and returns 204', async () => {
+    const { body: task } = await request(app).post('/tasks').send({ title: 'Plan sprint' });
+
+    const res = await request(app).delete(`/tasks/${task.id}`);
+
+    expect(res.status).toBe(204);
+    expect(res.body).toEqual({});
+
+    const list = await request(app).get('/tasks');
+    expect(list.body).toEqual([]);
+  });
+
+  it('returns 404 when the task does not exist', async () => {
+    const res = await request(app).delete('/tasks/missing-id');
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe('Task not found');
+  });
+});
