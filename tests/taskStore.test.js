@@ -38,3 +38,16 @@ describe('taskStore.findAll', () => {
     expect(taskStore.findAll()).toHaveLength(1);
   });
 });
+
+describe('taskStore.updateStatus', () => {
+  it('updates the status of an existing task', () => {
+    const { id } = taskStore.create({ title: 'A' });
+
+    expect(taskStore.updateStatus(id, 'done')).toMatchObject({ id, status: 'done' });
+    expect(taskStore.findAll()[0].status).toBe('done');
+  });
+
+  it('returns null when the task does not exist', () => {
+    expect(taskStore.updateStatus('missing-id', 'done')).toBeNull();
+  });
+});

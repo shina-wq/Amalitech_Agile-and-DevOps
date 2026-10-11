@@ -61,3 +61,36 @@ describe('POST /tasks', () => {
     expect(res.body.error).toBe('Description must be a string');
   });
 });
+
+describe('PATCH /tasks/:id/status', () => {
+  let taskId;
+
+  beforeEach(async () => {
+    const res = await request(app).post('/tasks').send({ title: 'Plan sprint' });
+    taskId = res.body.id;
+  });
+
+  it.each(['todo', 'in-progress', 'done'])('updates status to %s and returns 200', async (status) => {
+    const res = await request(app).patch(`/tasks/${taskId}/status`).send({ status });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ id: taskId, status });
+  });
+
+  it.each([
+    ['invalid', { status: 'archived' }],
+    ['missing', {}],
+  ])('returns 400 when status is %s', async (_, body) => {
+    const res = await request(app).patch(`/tasks/${taskId}/status`).send(body);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Status must be one of: todo, in-progress, done');
+  });
+
+  it('returns 404 when the task does not exist', async () => {
+    const res = await request(app).patch('/tasks/missing-id/status').send({ status: 'done' });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe('Task not found');
+  });
+});

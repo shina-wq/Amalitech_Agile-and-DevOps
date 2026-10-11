@@ -21,4 +21,21 @@ router.post('/', (req, res) => {
   res.status(201).json(task);
 });
 
+router.patch('/:id/status', (req, res) => {
+  const { status } = req.body ?? {};
+
+  if (!taskStore.STATUSES.includes(status)) {
+    return res
+      .status(400)
+      .json({ error: `Status must be one of: ${taskStore.STATUSES.join(', ')}` });
+  }
+
+  const task = taskStore.updateStatus(req.params.id, status);
+  if (!task) {
+    return res.status(404).json({ error: 'Task not found' });
+  }
+
+  res.json(task);
+});
+
 module.exports = router;
